@@ -100,10 +100,6 @@ public class LoginActivity extends AppCompatActivity implements LoaderCallbacks<
             return;
         }
 
-
-
-
-
         getLoaderManager().initLoader(0, null, this);
     }
 
