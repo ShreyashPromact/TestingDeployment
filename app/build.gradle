@@ -1,4 +1,6 @@
 apply plugin: 'com.android.application'
+def releaseVersionName
+def releaseVersionCode
 
 android {
     compileSdkVersion 23
@@ -17,38 +19,54 @@ android {
     }
     productFlavors {
         development {
-            // Fetch the version according to git latest tag and "how far are we from last tag"
-            println("===================== For development Branch =======================")
-            def longVersionName = "git -C ${rootDir} describe --tags --long".execute().text.trim()
-            println("------------- longVersionName:: "+longVersionName)
-            def (fullVersionTag, versionBuild, gitSha) = longVersionName.tokenize('-')
-            println("------------- fullVerionTag:: "+fullVersionTag)
-            println("------------- versionBuild:: "+versionBuild)
-            println("------------- gitSha:: "+gitSha)
-            def(versionMajor, versionMinor, versionPatch) = fullVersionTag.tokenize('.')
-            println("------------- versionMajor:: "+versionMajor)
-            println("------------- versionMinor:: "+versionMinor)
-            println("------------- versionPatch:: "+versionPatch)
-            // Set the version name
-            versionName "$versionMajor.$versionMinor($versionBuild)"
-
-            // Turn the version name into a version code
-            versionCode versionMajor.toInteger() * 100000 +
-                    versionMinor.toInteger() * 10000 +
-                    //versionPatch.toInteger() * 1000 +
-                    versionBuild.toInteger()
-
-            // Friendly print the version output to the Gradle console
-            printf("\n--------" + "VERSION DATA--------" + "\n" + "- CODE: " + versionCode + "\n" +
-                    "- NAME: " + versionName + "\n----------------------------\n")
+            println("\n===================== For development Branch =======================")
+            versionCode 2
+            versionName "2.0"
+            printf("\n--------" + "VERSION DATA--------" + "\n" +
+                    "- CODE: " + versionCode + "\n" +
+                    "- NAME: " + versionName + "\n" +
+                    "----------------------------\n")
         }
         betatesters {
-
-            println("===================== For beta-Testers Branch =======================")
-
+            println("\n\n===================== For beta-Testers Branch =======================")
+            versionCode getTagVersionCode()
+            versionName getTagVersionName()
+            printf("\n--------" + "VERSION DATA--------" + "\n" +
+                    "- CODE: " + versionCode + "\n" +
+                    "- NAME: " + versionName + "\n" +
+                    "----------------------------\n")
         }
     }
 }
+// Define a method
+def getTagVersionName() {
+    // Fetch the version according to git latest tag and "how far are we from last tag"
+    def longVersionName = "git -C ${rootDir} describe --tags --long".execute().text.trim()
+    def (fullVersionTag, versionBuild, gitSha) = longVersionName.tokenize('-')
+    def(versionMajor, versionMinor, versionPatch) = fullVersionTag.tokenize('.')
+    // Set the version name
+    //versionName "$versionMajor.$versionMinor($versionBuild)"
+    return "$versionMajor.$versionMinor($versionBuild)"
+}
+
+// Define a method
+def getTagVersionCode() {
+    def longVersionName = "git -C ${rootDir} describe --tags --long".execute().text.trim()
+    def (fullVersionTag, versionBuild, gitSha) = longVersionName.tokenize('-')
+    def(versionMajor, versionMinor, versionPatch) = fullVersionTag.tokenize('.')
+    // Set the version name
+    //versionName "$versionMajor.$versionMinor($versionBuild)"
+    // Turn the version name into a version code
+    /*versionCode versionMajor.toInteger() * 100000 +
+            versionMinor.toInteger() * 10000 +
+            //versionPatch.toInteger() * 1000 +
+            versionBuild.toInteger()*/
+    return versionMajor.toInteger() * 100000 +
+            versionMinor.toInteger() * 10000 +
+            //versionPatch.toInteger() * 1000 +
+            versionBuild.toInteger()
+}
+
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
