@@ -1,6 +1,4 @@
 apply plugin: 'com.android.application'
-def releaseVersionName
-def releaseVersionCode
 
 android {
     compileSdkVersion 23
@@ -38,7 +36,7 @@ android {
         }
     }
 }
-// Define a method
+// Method to make version name
 def getTagVersionName() {
     // Fetch the version according to git latest tag and "how far are we from last tag"
     def longVersionName = "git -C ${rootDir} describe --tags --long".execute().text.trim()
@@ -49,7 +47,7 @@ def getTagVersionName() {
     return "$versionMajor.$versionMinor($versionBuild)"
 }
 
-// Define a method
+// Method to make version code
 def getTagVersionCode() {
     def longVersionName = "git -C ${rootDir} describe --tags --long".execute().text.trim()
     def (fullVersionTag, versionBuild, gitSha) = longVersionName.tokenize('-')
