@@ -33,20 +33,18 @@ android {
                     "- CODE: " + versionCode + "\n" +
                     "- NAME: " + versionName + "\n" +
                     "----------------------------\n")
-
         }
     }
 }
 // Method to make version name
 def getTagVersionName() {
+
+
     // Fetch the version according to git latest tag and "how far are we from last tag"
     def longVersionName = "git -C ${rootDir} describe --tags --long".execute().text.trim()
-    println("\n------------------ Version : "+longVersionName);
     def (fullVersionTag, versionBuild, gitSha) = longVersionName.tokenize('-')
     def (versionMajor, versionMinor, versionPatch) = fullVersionTag.tokenize('.')
-    // Set the version name
-    //versionName "$versionMajor.$versionMinor($versionBuild)"
-    return "$versionMajor.$versionMinor($versionBuild)"
+    return "$versionMajor.$versionMinor.$versionPatch($gitSha)"
 }
 
 // Method to make version code
@@ -54,19 +52,10 @@ def getTagVersionCode() {
     def longVersionName = "git -C ${rootDir} describe --tags --long".execute().text.trim()
     def (fullVersionTag, versionBuild, gitSha) = longVersionName.tokenize('-')
     def (versionMajor, versionMinor, versionPatch) = fullVersionTag.tokenize('.')
-    // Set the version name
-    //versionName "$versionMajor.$versionMinor($versionBuild)"
-    // Turn the version name into a version code
-    /*versionCode versionMajor.toInteger() * 100000 +
-            versionMinor.toInteger() * 10000 +
-            //versionPatch.toInteger() * 1000 +
-            versionBuild.toInteger()*/
-    return versionMajor.toInteger() * 100000 +
-            versionMinor.toInteger() * 10000 +
-            //versionPatch.toInteger() * 1000 +
-            versionBuild.toInteger()
+    return versionMajor.toInteger() * 1000 +
+            versionMinor.toInteger() * 100 +
+            versionPatch.toInteger()
 }
-
 
 dependencies {
     compile fileTree(dir: 'libs', include: ['*.jar'])
